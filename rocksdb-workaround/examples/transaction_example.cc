@@ -545,15 +545,22 @@ start = clock();
 
 
 std::thread t1(do_run4,txn_db);
-std::thread t2(do_run7,txn_db);
-std::thread t3(do_run5,txn_db);
-std::thread t4(do_run8,txn_db);
-//do_run(txn_db);
- //assert(s.ok());
-  t2.join();
- t1.join();
-   t3.join();
- t4.join();
+std::thread t2(do_run4,txn_db);
+std::thread t3(do_run4,txn_db);
+std::thread t4(do_run4,txn_db);
+std::thread t5(do_run4,txn_db);
+std::thread t6(do_run4,txn_db);
+std::thread t7(do_run4,txn_db);
+std::thread t8(do_run4,txn_db);
+t1.join();
+t2.join();
+t3.join()
+t4.join();
+t5.join();
+t6.join();
+t7.join()
+t8.join();
+
 end = clock();
 
   // Commit transaction
