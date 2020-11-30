@@ -554,11 +554,11 @@ std::thread t7(do_run4,txn_db);
 std::thread t8(do_run4,txn_db);
 t1.join();
 t2.join();
-t3.join()
+t3.join();
 t4.join();
 t5.join();
 t6.join();
-t7.join()
+t7.join();
 t8.join();
 
 end = clock();
