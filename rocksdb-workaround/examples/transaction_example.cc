@@ -190,6 +190,7 @@ void do_run3(TransactionDB *db) {
 
 
 void do_run4(TransactionDB *db) {
+     int count10=0;
      ReadOptions read_options;
      WriteOptions write_options;
      std::string value;
@@ -199,7 +200,7 @@ void do_run4(TransactionDB *db) {
      Status s; 
     clock_t start3,end3; 
  start3 = clock();
-     for (int j=0 ;j<1000000;j++){
+     for (int j=0 ;j<100000;j++){
 
    Transaction* txn = db->BeginTransaction(write_options);
 
@@ -245,13 +246,13 @@ void do_run4(TransactionDB *db) {
 
 
      if(s.ok())  {
-       count1++;
+       count10++;
 
      }
      else{ // std::cout<<"error"<<std::endl;
       s = txn->Rollback();
        if(s.ok())  {
-       count1++;
+       count10++;
 
     }
    
@@ -261,7 +262,8 @@ void do_run4(TransactionDB *db) {
 
        end3 =clock();
      double duration =(double)(end3-start3)/CLOCKS_PER_SEC;
-     printf("Duratuion 4  : %f\n",duration); // 4.015
+     printf("Duratuion 4  : %f\n",duration);
+     std::cout<<"Count 10:"<<count10   <<std::endl; // 4.015
 }
 
 
