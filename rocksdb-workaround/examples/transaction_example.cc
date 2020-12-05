@@ -298,7 +298,7 @@ void do_run4p(TransactionDB *db,int *k1,int*k2) {
   //   s = txn->DoGet(read_options, std::to_string(k), &value, 1);
      s = txn->DoGet(read_options, std::to_string(k) ,&value, 1);
   //   s = txn->DoPut(std::to_string(rand()%10000), "deasdsaf", 1);
-     s = txn->DoPut("1", "deasdsaf", 1);
+     s = txn->DoPut("5", "deasdsaf", 1);
      s = txn->Commit();
     }
 
