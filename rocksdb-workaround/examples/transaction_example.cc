@@ -4,6 +4,9 @@
 //  (found in the LICENSE.Apache file in the root directory).
 
 #ifndef ROCKSDB_LITE
+
+
+#include <unistd.h>
 #include<iostream>
 #include "rocksdb/db.h"
 #include "rocksdb/options.h"
@@ -267,6 +270,88 @@ void do_run4(TransactionDB *db) {
 }
 
 
+
+void do_run4p(TransactionDB *db,int *k1,int*k2) {
+     int count10=0;
+     ReadOptions read_options;
+     WriteOptions write_options;
+     std::string value;
+     *k2 =0;
+    // WriteOptions write_options;
+    
+     Status s; 
+    clock_t start3,end3; 
+ start3 = clock();
+     for (int j=0 ;j<100000;j++){
+
+   Transaction* txn = db->BeginTransaction(write_options);
+
+    if(rand()%2==0){
+
+     
+  
+     int k;
+     k =rand()%4;
+     //std::cout<<"k ="<<k<<std::endl;
+
+
+  //   s = txn->DoGet(read_options, std::to_string(k), &value, 1);
+     s = txn->DoGet(read_options, std::to_string(k) ,&value, 1);
+  //   s = txn->DoPut(std::to_string(rand()%10000), "deasdsaf", 1);
+     s = txn->DoPut("1", "deasdsaf", 1);
+     s = txn->Commit();
+    }
+
+    else{
+
+
+     int k;
+     k =rand()%10000;
+     //std::cout<<"k ="<<k<<std::endl;
+
+
+  // s = txn->DoGet(read_options, std::to_string(k), &value, 1);
+  //   s = txn->DoGet(read_options, std::to_string(k), &value, 1);
+  // s = txn->DoPut(std::to_string(rand()%10000), "deasdsaf", 1);
+
+
+
+    
+     s = txn->DoPut("1", "deasdsaf", 1);
+     s = txn->DoPut("2", "deasdsaf", 1);
+     s = txn->DoPut("3", "deasdsaf", 1);
+     s = txn->DoPut("4", "deasdsaf", 1);
+     s = txn->Commit();
+
+
+    }
+
+
+     if(s.ok())  {
+       count10++;
+       *k1 = count10;
+
+     }
+     else{ // std::cout<<"error"<<std::endl;
+      s = txn->Rollback();
+       if(s.ok())  {
+       count10++;
+       *k1 = count10;
+    }
+       else{
+      *k2 = *k2 +1;
+     }
+   
+     }
+   }
+
+
+       end3 =clock();
+     double duration =(double)(end3-start3)/CLOCKS_PER_SEC;
+     printf("Duratuion 4  : %f\n",duration);
+     std::cout<<"Count 10:"<<count10   <<std::endl; // 4.015
+}
+
 void do_run6(TransactionDB *db) {
      ReadOptions read_options;
      WriteOptions write_options;
@@ -513,6 +598,8 @@ void do_run8(TransactionDB *db) {
 
 }
 int main() {
+    int thread;
+    std::cin>>thread;
     std::string value;
          ReadOptions read_options;
         TransactionDB* txn_db;
@@ -544,8 +631,40 @@ int main() {
  txn2->Commit();
 
 start = clock();
+int k1[100],k2[100];
+//std::thread t1(do_run4p,txn_db,&k1[0],&k2[0]);
+//std::thread t2(do_run4p,txn_db,&k1[1],&k2[1]);
+//sleep(3);
+//std::cout<<"commit :"<<k1[0]+k1[1]<<std::endl;
+//std::cout<<"abort :"<<k2[0]+k2[1]<<std::endl;
+
+std::vector<std::thread> worker_threads;
+
+for(int i=0;i<thread;i++){
+   worker_threads.emplace_back(do_run4p,txn_db,&k1[i],&k2[i]);
+}
+sleep(3);
+//std::cout<<"commit :"<<k1[0]+k1[1]<<std::endl;
+//td::cout<<"abort :"<<k2[0]+k2[1]<<std::endl;
+int commit =0;
+int abort =0;
+for (int i =0;i<thread;i++){
+
+    commit =commit +k1[i];
+    abort =abort +k2[i];
+}
 
 
+std::cout<<"commit :"<<commit<<std::endl;
+std::cout<<"abort :"<<abort<<std::endl;
+for (int i =0;i<thread;i++){
+
+
+
+worker_threads[i].join();
+}
+
+/*
 std::thread t1(do_run4,txn_db);
 std::thread t2(do_run4,txn_db);
 std::thread t3(do_run4,txn_db);
@@ -579,8 +698,11 @@ t16.join();
 t17.join();
 t18.join();
 
-end = clock();
 
+*/
+end = clock();
+//t1.join();
+//t2.join();
   // Commit transaction
 double duration =(double)(end-start)/CLOCKS_PER_SEC;("%f\n",duration); // 4.015
  printf("%f\n",duration); // 4.015
