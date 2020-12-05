@@ -319,8 +319,8 @@ void do_run4p(TransactionDB *db,int *k1,int*k2) {
     
      s = txn->DoPut("1", "deasdsaf", 1);
      s = txn->DoPut("2", "deasdsaf", 1);
-     s = txn->DoPut("3", "deasdsaf", 1);
-     s = txn->DoPut("4", "deasdsaf", 1);
+     s = txn->DoPut("6", "deasdsaf", 1);
+     s = txn->DoPut("7", "deasdsaf", 1);
      s = txn->Commit();
 
 
