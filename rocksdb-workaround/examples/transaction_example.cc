@@ -271,7 +271,7 @@ void do_run4(TransactionDB *db) {
 
 
 
-void do_run4p(TransactionDB *db,int *k1,int*k2) {
+void do_run4p(TransactionDB *db,int *k1,int*k2,int k3) {
      int count10=0;
      ReadOptions read_options;
      WriteOptions write_options;
@@ -291,14 +291,14 @@ void do_run4p(TransactionDB *db,int *k1,int*k2) {
      
   
      int k;
-     k =rand()%4;
+     k =rand()%k3;
      //std::cout<<"k ="<<k<<std::endl;
 
 
   //   s = txn->DoGet(read_options, std::to_string(k), &value, 1);
      s = txn->DoGet(read_options, std::to_string(k) ,&value, 1);
   //   s = txn->DoPut(std::to_string(rand()%10000), "deasdsaf", 1);
-     s = txn->DoPut("5", "deasdsaf", 1);
+     s = txn->DoPut("100", "deasdsaf", 1);
      s = txn->Commit();
     }
 
@@ -319,8 +319,8 @@ void do_run4p(TransactionDB *db,int *k1,int*k2) {
     
      s = txn->DoPut("1", "deasdsaf", 1);
      s = txn->DoPut("2", "deasdsaf", 1);
-     s = txn->DoPut("6", "deasdsaf", 1);
-     s = txn->DoPut("7", "deasdsaf", 1);
+     s = txn->DoPut("101", "deasdsaf", 1);
+     s = txn->DoPut("102", "deasdsaf", 1);
      s = txn->Commit();
 
 
@@ -598,8 +598,9 @@ void do_run8(TransactionDB *db) {
 
 }
 int main() {
-    int thread;
+    int thread k3;
     std::cin>>thread;
+    std::cin>>k3;
     std::string value;
          ReadOptions read_options;
         TransactionDB* txn_db;
@@ -641,7 +642,7 @@ int k1[100],k2[100];
 std::vector<std::thread> worker_threads;
 
 for(int i=0;i<thread;i++){
-   worker_threads.emplace_back(do_run4p,txn_db,&k1[i],&k2[i]);
+   worker_threads.emplace_back(do_run4p,txn_db,&k1[i],&k2[i],k3);
 }
 sleep(3);
 //std::cout<<"commit :"<<k1[0]+k1[1]<<std::endl;
